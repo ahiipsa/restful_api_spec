@@ -2,8 +2,8 @@
 
 ## RESTful API HTTP methods
 
-resource | POST (create) | GET (read) | PUT (update) | DELETE (delete)
---- | ---
+Resource | POST (create) | GET (read) | PUT (update) | DELETE (delete)
+--- | --- | --- | --- | ---
 URI коллекции  | создает элемент в коллекции | возвращает список элементов | заменяет всю коллекцию на другую | удаляет всю колекцию
 URI элемента   | not used | возвращает element | обновляет элемент | удаляет элемент
 
