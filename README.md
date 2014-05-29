@@ -1,13 +1,28 @@
 ## nextoneSpec
 
-## RESTful API HTTP methods
+- [API HTTP methods](#api-http-methods)
+- [Data format](#data-format)
+ - [Element](#element)
+ - [Collection](#collection)
+- [Methods](#methods)
+- [Expand child element](#expand-child-element)
+- [Collection Order, Limit and Offset](#collection-order-limit-and-offset)
 
-resource | POST (create) | GET (read) | PUT (update) | DELETE (delete)
---- | ---
-URI коллекции  | создает элемент в коллекции | возвращает список элементов | заменяет всю коллекцию на другую | удаляет всю колекцию
+## API HTTP methods
+
+RESTful
+
+Resource | POST (create) | GET (read) | PUT (update) | DELETE (delete)
+--- | --- | --- | --- | ---
+URI коллекции  | создает элемент в коллекции | возвращает список элементов | заменяет всю коллекцию на другую | удаляет всю коллекцию
 URI элемента   | not used | возвращает element | обновляет элемент | удаляет элемент
 
-## Element
+## Data format
+
+application/json
+JSON
+
+### Element
 
 Обязательные параметры в элементе
 
@@ -15,41 +30,23 @@ URI элемента   | not used | возвращает element | обновл�
 - **href** string uri элемента
 - **createdAt** date || timestamp дата создания елемента
 
+`GET /resources/1`
+
 ```json
 {
-    id: id,
+    id: 1,
     href: '/resources/1',
     createdAt: 123
 }
 ```
 
-### Create element:
+### Collection
 
-`POST /resources`
-
-`GET /resources/:elementId/resources`
-
-### Get element and collection:
-
-`GET /resources/:elementId`
-
-`GET /resources/:elementId/resources2`
-
-### Update element and collection:
-
-`PUT /resources/:elementId`
-`PUT /resources/:elementId/resources`
-
-### Delete element and collection:
-
-`DELETE /resources/:elementId`
-`DELETE /resources/:elementId/resources`
-
-## Collection data format
+Обязательные параметры в коллекции
 
 - **total** number количество элементов
-- **limit** number лимит размер колекции default | limit
-- **offset** number  смещение колекции
+- **limit** number лимит размер коллекции default | limit
+- **offset** number  смещение коллекции
 - **collection** array коллекция элементов
 
 `GET /resources?limit=30`
@@ -79,21 +76,46 @@ URI элемента   | not used | возвращает element | обновл�
 }
 ```
 
+## Methods
 
-### Collection find element
+### Create element:
 
-find element where owner id in 12,13,14
+`POST /resources`
+
+`POST /resources/:elementId/resources2`
+
+### Get element, collection:
+
+`GET /resources/:elementId`
+
+`GET /resources/:elementId/resources2`
+
+### Update element, collection:
+
+`PUT /resources/:elementId`
+
+`PUT /resources/:elementId/resources`
+
+### Delete element, collection:
+
+`DELETE /resources/:elementId`
+
+`DELETE /resources/:elementId/resources`
+
+### Collection filter element
+
+Фильтр коллекции по `owner.id` [12,13,14]
 
 `GET /resources?owner=12,13,14`
 
 
-## Expand
+## Expand child element 
 
 Раскрытие **дочернего элемента**
 
 - **expand** [string[,...]]
 
-Так выглядит простой запрос за ресурсом и ответ:
+Так выглядит простой запрос за элементом и ответ:
 
 `GET /todos/1`
 
@@ -126,7 +148,7 @@ find element where owner id in 12,13,14
 }
 ```
 
-## Order, Limit and Offset
+## Collection Order, Limit and Offset
 
 ### Order
 
@@ -137,12 +159,16 @@ find element where owner id in 12,13,14
 Example:
 
 `GET /resources?order=createAt`
+
 `GET /resources?order=createAt,id`
+
 `GET /resources?order=createAt:desc`
+
+`GET /resources?order=createAt:desc,id:asc`
 
 ### Limit, Offset
 
-Лимитирование коллекции ресурсов
+Лимитирование коллекции
 
 - **limit** number
 - **offset** number
