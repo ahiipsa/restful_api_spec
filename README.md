@@ -40,9 +40,37 @@ JSON
 }
 ```
 
+<<<<<<< HEAD
 ### Collection
 
 Обязательные параметры в коллекции
+=======
+### Create element:
+
+`POST /resources`
+
+`POST /resources/:elementId/resources`
+
+### Get element and collection:
+
+`GET /resources/:elementId`
+
+`GET /resources/:elementId/resources2`
+
+### Update element and collection:
+
+`PUT /resources/:elementId`
+
+`PUT /resources/:elementId/resources`
+
+### Delete element and collection:
+
+`DELETE /resources/:elementId`
+
+`DELETE /resources/:elementId/resources`
+
+## Collection data format
+>>>>>>> 84212736e5375f514fd57b962871c58643e7d62f
 
 - **total** number количество элементов
 - **limit** number лимит размер коллекции default | limit
