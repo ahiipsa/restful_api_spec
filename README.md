@@ -32,7 +32,7 @@ JSON
 
 `GET /resources/1`
 
-```json
+```javascript
 {
     id: 1,
     href: '/resources/1',
@@ -51,7 +51,7 @@ JSON
 
 `GET /resources?limit=30`
 
-```json
+```javascript
 {
     total: 3,
     limit: 30,
@@ -119,7 +119,7 @@ JSON
 
 `GET /todos/1`
 
-```json
+```javascript
 {
     id: 123,
     title: 'TodoTitle',
@@ -133,7 +133,7 @@ JSON
 
 `GET /todos/1?expand=owner`
 
-```json
+```javascript
 {
     id: 123,
     title: 'TodoTitle',
