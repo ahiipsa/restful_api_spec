@@ -26,11 +26,13 @@ URI элемента   | not used | возвращает element | обновл�
 ### Create element:
 
 `POST /resources`
+
 `GET /resources/:elementId/resources`
 
 ### Get element and collection:
 
 `GET /resources/:elementId`
+
 `GET /resources/:elementId/resources2`
 
 ### Update element and collection:
