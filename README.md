@@ -4,8 +4,9 @@
 - [Data format](#data-format)
  - [Element](#element)
  - [Collection](#collection)
+ - [Reference element, collection](#reference-element-collection)
 - [Methods](#methods)
-- [Expand child element](#expand-child-element)
+- [Expand reference element, collection](#expand-reference-element-collection)
 - [Collection Order, Limit and Offset](#collection-order-limit-and-offset)
 - [Errors](#Errors)
  - [400 Bad request](#400-bad-request)
@@ -20,8 +21,8 @@ RESTful
 
 Resource | POST (create) | GET (read) | PUT (update) | DELETE (delete)
 --- | --- | --- | --- | ---
-URI коллекции  | создает элемент в коллекции | возвращает список элементов | заменяет всю коллекцию на другую | удаляет всю коллекцию
-URI элемента   | not used | возвращает element | обновляет элемент | удаляет элемент
+URI коллекции http://api.example.com/tasks <br/> http://api.example.com/tasks/:taskId/labels | создает элемент в коллекции | возвращает коллекцию элементов | заменяет всю коллекцию | удаляет всю коллекцию
+URI элемента http://api.example.com/tasks/:taskId   | ошибка | возвращает элемент | обновляет элемент | удаляет элемент
 
 ## Data format
 
@@ -36,13 +37,39 @@ JSON
 - **href** string uri элемента
 - **createdAt** date || timestamp дата создания елемента
 
-`GET /resources/1`
+`GET //api.example.com/tasks/1`
 
 ```json
 {
     "id": 1,
-    "href": "/resources/1",
-    "createdAt": 123
+    "href": "//api.example.com/tasks/1",
+    "createdAt": 123,
+    "title": "titlestring",
+    "owner": {
+        "href": "//api.example.com/users/1"
+    }
+}
+```
+
+### Reference element, collection
+
+- **referenceName** object 
+ - **href** string resource uri 
+
+Элемент может иметь ссылку на другой элемент(владельца/пользователя) или коллекцию (метки,связанные задачи, пользователи), в этом случае элемент должен содержать имя и указатель на ресурс **owner.href**,  **labels.href**
+
+```json
+{
+    "id": 1,
+    "href": "//api.example.com/tasks/1",
+    "createdAt": 123,
+    "title": "titlestring",
+    "owner": {
+        "href": "//api.example.com/users/1"
+    },
+    "labels": {
+        "href": "//api.example.com/tasks/1/labels"
+    }
 }
 ```
 
@@ -53,9 +80,9 @@ JSON
 - **total** number количество элементов
 - **limit** number лимит размер коллекции default | limit
 - **offset** number  смещение коллекции
-- **collection** array коллекция элементов
+- **collection** array of element коллекция элементов
 
-`GET /resources?limit=30`
+`GET //api.example.com/tasks?limit=30`
 
 ```json
 {
@@ -65,20 +92,45 @@ JSON
     "collection": [
         {
             "id": 1,
-            "href": "/resource/1",
-            "title": "titlestring"
+            "href": "//api.example.com/tasks/1",
+            "createdAt": 123,
+            "title": "titlestring1",
+            "owner": {
+                "href": "//api.example.com/users/2"
+            }
         },
         {
             "id": 2,
-            "href": "/resource/2",
-            "title": "titlestring"
+            "href": "//api.example.com/tasks/2",
+            "createdAt": 123,
+            "title": "titlestring2"
+            "owner": {
+                "href": "//api.example.com/users/1"
+            }
         },
         {
             "id": 2,
-            "href": "/resource/3",
-            "title": "titlestring"
+            "href": "//api.example.com/tasks/3",
+            "createdAt": 123,
+            "title": "titlestring3",
+            "owner": {
+                "href": "//api.example.com/users/3"
+            }
         }
     ]
+}
+```
+
+### Empty Collection 
+
+Если коллеция пустая, приходит ответ 200 с данными
+
+```json
+{
+    "total": 0,
+    "limit": 30,
+    "offset": 0,
+    "collection": []
 }
 ```
 
@@ -86,70 +138,90 @@ JSON
 
 ### Create element:
 
-`POST /resources`
+`POST //api.example.comtasks`
 
-`POST /resources/:elementId/resources2`
+`POST //api.example.comtasks/:taskId/labels`
 
 ### Get element, collection:
 
-`GET /resources/:elementId`
+`GET //api.example.com/tasks/:taskId`
 
-`GET /resources/:elementId/resources2`
+`GET //api.example.com/tasks/:taskId/labels`
 
 ### Update element, collection:
 
-`PUT /resources/:elementId`
+`PUT //api.example.comtasks/:taskId`
 
-`PUT /resources/:elementId/resources`
+`PUT //api.example.comtasks/:taskId/labels`
 
 ### Delete element, collection:
 
-`DELETE /resources/:elementId`
+`DELETE //api.example.comtasks/:taskId`
 
-`DELETE /resources/:elementId/resources`
+`DELETE //api.example.comtasks/:taskId/labels`
 
 ### Collection filter element
 
 Фильтр коллекции по `owner.id` [12,13,14]
 
-`GET /resources?owner=12,13,14`
+`GET //api.example.com/tasks?owner=12,13,14`
 
 
-## Expand child element 
+## Expand reference element, collection 
 
-Раскрытие **дочернего элемента**
+Раскрытие **ссылки** на **элемент** или **коллекцию**
 
 - **expand** [string[,...]]
 
 Так выглядит простой запрос за элементом и ответ:
 
-`GET /todos/1`
+`GET //api.example.com/tasks/1`
 
 ```json
 {
     "id": 123,
-    "title": "TodoTitle",
+    "href": "//api.example.com/tasks/1",
+    "createdAt": 123,
+    "title": "titlestring",
     "owner": {
-        "href": "/users/1"
+        "href": "//api.example.com/users/1"
+    },
+    "labels": {
+        "href": "//api.example.com/tasks/1/labels"
     }
 }
 ```
 
-Чтобы получить полную информацию **owner** выполняем запрос с **expand**:
+Чтобы получить полную информацию **owner** и **labels**, выполняем запрос с **expand**=owner,labels в query params:
 
-`GET /todos/1?expand=owner`
+`GET //api.example.com/tasks/1?expand=owner`
 
 ```json
 {
     "id": 123,
+    "href": "//api.example.com/tasks/1",
+    "created": 123,
     "title": "TodoTitle",
     "owner": {
         "id": 1,
-        "href": "/users/1",
+        "href": "//api.example.com/users/1",
         "createdAt": 1234,
-        "updatedAt": 1234,
         "fullName": "Jon Doe",
         "nickname": "jondoe"
+    },
+    "labels": {
+        "href": "//api.example.com/tasks/1/labels"
+        "total": 1,
+        "limit": 10,
+        "offset": 0,
+        "collection": [
+            {
+                id: 1,
+                href: '//api.example.com',
+                created: 123,
+                name: 'specapi'
+            }
+        ]
     }
 }
 ```
@@ -164,13 +236,13 @@ JSON
 
 Example:
 
-`GET /resources?order=createAt`
+`GET //api.example.com/tasks?order=createAt`
 
-`GET /resources?order=createAt,id`
+`GET //api.example.com/tasks?order=createAt,id`
 
-`GET /resources?order=createAt:desc`
+`GET //api.example.com/tasks?order=createAt:desc`
 
-`GET /resources?order=createAt:desc,id:asc`
+`GET //api.example.com/tasks?order=createAt:desc,id:asc`
 
 ### Limit, Offset
 
@@ -181,7 +253,7 @@ Example:
 
 Example:
 
-`GET /resources?limit=10&offset=0`
+`GET //api.example.com/tasks?limit=10&offset=0`
 
 
 ## Errors
