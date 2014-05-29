@@ -1,4 +1,4 @@
-## nextoneSpec
+## NextoneSpec
 
 - [API HTTP methods](#api-http-methods)
 - [Data format](#data-format)
@@ -7,6 +7,12 @@
 - [Methods](#methods)
 - [Expand child element](#expand-child-element)
 - [Collection Order, Limit and Offset](#collection-order-limit-and-offset)
+- [Errors](#Errors)
+ - [400 Bad request](#400-bad-request)
+ - [401 Unauthorized](#401-unauthorized)
+ - [403 Permission denied](#403-permission-denied)
+ - [409 Conflict](#409-confilct)
+ - [500 Internal error](#500-internal-error)
 
 ## API HTTP methods
 
@@ -32,11 +38,11 @@ JSON
 
 `GET /resources/1`
 
-```javascript
+```json
 {
-    id: 1,
-    href: '/resources/1',
-    createdAt: 123
+    "id": 1,
+    "href": "/resources/1",
+    "createdAt": 123
 }
 ```
 
@@ -51,26 +57,26 @@ JSON
 
 `GET /resources?limit=30`
 
-```javascript
+```json
 {
-    total: 3,
-    limit: 30,
-    offset: 0,
-    collection: [
+    "total": 3,
+    "limit": 30,
+    "offset": 0,
+    "collection": [
         {
-            id: 1,
-            href: '/resource/1',
-            title: 'titlestring'
+            "id": 1,
+            "href": "/resource/1",
+            "title": "titlestring"
         },
         {
-            id: 2,
-            href: '/resource/2',
-            title: 'titlestring'
+            "id": 2,
+            "href": "/resource/2",
+            "title": "titlestring"
         },
         {
-            id: 2,
-            href: '/resource/3',
-            title: 'titlestring'
+            "id": 2,
+            "href": "/resource/3",
+            "title": "titlestring"
         }
     ]
 }
@@ -119,12 +125,12 @@ JSON
 
 `GET /todos/1`
 
-```javascript
+```json
 {
-    id: 123,
-    title: 'TodoTitle',
-    owner: {
-        href: '/users/1'
+    "id": 123,
+    "title": "TodoTitle",
+    "owner": {
+        "href": "/users/1"
     }
 }
 ```
@@ -133,17 +139,17 @@ JSON
 
 `GET /todos/1?expand=owner`
 
-```javascript
+```json
 {
-    id: 123,
-    title: 'TodoTitle',
-    owner: {
-        id: 1,
-        href: '/users/1',
-        createdAt: 1234,
-        updatedAt: 1234,
-        fullName: 'Jon Doe',
-        nickname: 'jondoe'
+    "id": 123,
+    "title": "TodoTitle",
+    "owner": {
+        "id": 1,
+        "href": "/users/1",
+        "createdAt": 1234,
+        "updatedAt": 1234,
+        "fullName": "Jon Doe",
+        "nickname": "jondoe"
     }
 }
 ```
@@ -176,3 +182,67 @@ Example:
 Example:
 
 `GET /resources?limit=10&offset=0`
+
+
+## Errors
+
+Обязательный параметры
+
+- **message** string сообщение об ошибке
+
+```json
+{
+    "message": "Some error message"
+}
+```
+
+### 400 Bad request
+
+```json
+{
+    "message": "Bad request"
+}
+```
+
+### 401 Unauthorized
+
+```json
+{
+    "message": "Unauthorized"
+}
+```
+
+### 403 Permission Denied
+```json
+{
+    "message": "Permission Denied"
+}
+```
+
+### 404 Not fount
+
+```json
+{
+    "message": "Not found"
+}
+```
+
+### 409 Conflict
+
+- dublicate entry
+- ...
+
+```json
+{
+    "message": "Conflict"
+}
+```
+
+### 500 Internal error
+
+```json
+{
+    "message": "Internal error"
+}
+```
+
