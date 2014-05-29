@@ -2,8 +2,8 @@
 
 ## RESTful API HTTP methods
 
-resource | POST (create) | GET (read) | PUT (update) | DELETE (delete)
---- | ---
+Resource | POST (create) | GET (read) | PUT (update) | DELETE (delete)
+--- | --- | --- | --- | ---
 URI коллекции  | создает элемент в коллекции | возвращает список элементов | заменяет всю коллекцию на другую | удаляет всю колекцию
 URI элемента   | not used | возвращает element | обновляет элемент | удаляет элемент
 
@@ -27,7 +27,7 @@ URI элемента   | not used | возвращает element | обновл�
 
 `POST /resources`
 
-`GET /resources/:elementId/resources`
+`POST /resources/:elementId/resources`
 
 ### Get element and collection:
 
@@ -38,11 +38,13 @@ URI элемента   | not used | возвращает element | обновл�
 ### Update element and collection:
 
 `PUT /resources/:elementId`
+
 `PUT /resources/:elementId/resources`
 
 ### Delete element and collection:
 
 `DELETE /resources/:elementId`
+
 `DELETE /resources/:elementId/resources`
 
 ## Collection data format
@@ -137,7 +139,9 @@ find element where owner id in 12,13,14
 Example:
 
 `GET /resources?order=createAt`
+
 `GET /resources?order=createAt,id`
+
 `GET /resources?order=createAt:desc`
 
 ### Limit, Offset
