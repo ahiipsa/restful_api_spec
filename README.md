@@ -103,7 +103,7 @@ JSON
             "id": 2,
             "href": "//api.example.com/tasks/2",
             "createdAt": 123,
-            "title": "titlestring2"
+            "title": "titlestring2",
             "owner": {
                 "href": "//api.example.com/users/1"
             }
@@ -210,16 +210,16 @@ JSON
         "nickname": "jondoe"
     },
     "labels": {
-        "href": "//api.example.com/tasks/1/labels"
+        "href": "//api.example.com/tasks/1/labels",
         "total": 1,
         "limit": 10,
         "offset": 0,
         "collection": [
             {
-                id: 1,
-                href: '//api.example.com',
-                created: 123,
-                name: 'specapi'
+                "id": 1,
+                "href": '//api.example.com',
+                "created": 123,
+                "name": 'specapi'
             }
         ]
     }
