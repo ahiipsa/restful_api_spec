@@ -8,11 +8,11 @@
 - [Methods](#methods)
 - [Expand reference element, collection](#expand-reference-element-collection)
 - [Collection Order, Limit and Offset](#collection-order-limit-and-offset)
-- [Errors](#Errors)
+- [Errors](#errors)
  - [400 Bad request](#400-bad-request)
  - [401 Unauthorized](#401-unauthorized)
  - [403 Permission denied](#403-permission-denied)
- - [409 Conflict](#409-confilct)
+ - [409 Conflict](#409-conflict)
  - [500 Internal error](#500-internal-error)
 
 ## API HTTP methods
