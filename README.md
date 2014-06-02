@@ -276,6 +276,20 @@ Example:
 }
 ```
 
+```json
+{
+    "message": "Bad request",
+    "errors": [
+        {
+            "property": "data.email",
+            "value": "example@@invalid.com",
+            "message": "does not conform to the 'email' format"
+        }
+    ]
+}
+```
+
+
 ### 401 Unauthorized
 
 ```json
