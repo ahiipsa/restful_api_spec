@@ -8,6 +8,7 @@
 - [Methods](#methods)
 - [Expand reference element, collection](#expand-reference-element-collection)
 - [Collection Order, Limit and Offset](#collection-order-limit-and-offset)
+- [Restrict Fields](#restrict-fields)
 - [Errors](#errors)
  - [400 Bad request](#400-bad-request)
  - [401 Unauthorized](#401-unauthorized)
@@ -226,7 +227,7 @@ JSON
 }
 ```
 
-## Fields
+## Restrict Fields
 
 Ограничение списка возвращаемых параметров
 
@@ -244,14 +245,14 @@ JSON
 }
 ```
 
-`GET //api.example.com/tasks/1?fields=id,title,createdAt`
+`GET //api.example.com/tasks?fields=id,title,createdAt`
 
 ```json
 {
-    total: 3,
-    limit: 25,
-    offset: 0,
-    collection: [
+    "total": 3,
+    "limit": 25,
+    "offset": 0,
+    "collection": [
         {
             "id": 1,
             "createdAt": 121,
