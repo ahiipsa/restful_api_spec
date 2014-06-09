@@ -194,13 +194,13 @@ JSON
 
 Чтобы получить полную информацию **owner** и **labels**, выполняем запрос с **expand**=owner,labels в query params:
 
-`GET //api.example.com/tasks/1?expand=owner`
+`GET //api.example.com/tasks/1?expand=owner,labels`
 
 ```json
 {
     "id": 123,
     "href": "//api.example.com/tasks/1",
-    "created": 123,
+    "createdAt": 123,
     "title": "TodoTitle",
     "owner": {
         "id": 1,
@@ -218,12 +218,58 @@ JSON
             {
                 "id": 1,
                 "href": '//api.example.com',
-                "created": 123,
+                "createdAt": 123,
                 "name": 'specapi'
             }
         ]
     }
 }
+```
+
+## Fields
+
+Ограничение списка возвращаемых параметров
+
+- **fields** [string[,...]]
+
+Например нам необходимы id, название и дата создания задачи
+
+`GET //api.example.com/tasks/1?fields=id,title,createdAt`
+
+```json
+{
+    "id": 1,
+    "createdAt": 123,
+    "title": "TodoTitle"
+}
+```
+
+`GET //api.example.com/tasks/1?fields=id,title,createdAt`
+
+```json
+{
+    total: 3,
+    limit: 25,
+    offset: 0,
+    collection: [
+        {
+            "id": 1,
+            "createdAt": 121,
+            "title": "TodoTitle 1"
+        },
+        {
+            "id": 2,
+            "createdAt": 122,
+            "title": "TodoTitle 2"
+        },
+        {
+            "id": 3,
+            "createdAt": 123,
+            "title": "TodoTitle 3"
+        }
+    ]
+}
+
 ```
 
 ## Collection Order, Limit and Offset
