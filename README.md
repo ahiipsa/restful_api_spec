@@ -22,13 +22,14 @@ RESTful
 
 Resource | POST (create) | GET (read) | PUT (update) | DELETE (delete)
 --- | --- | --- | --- | ---
-URI коллекции http://api.example.com/tasks <br/> http://api.example.com/tasks/:taskId/labels | создает элемент в коллекции | возвращает коллекцию элементов | заменяет всю коллекцию | удаляет всю коллекцию
-URI элемента http://api.example.com/tasks/:taskId   | ошибка | возвращает элемент | обновляет элемент | удаляет элемент
+URI коллекции http://<domain>
+<domain>/tasks <br/> http://<domain>
+<domain>/tasks/:taskId/labels | создает элемент в коллекции | возвращает коллекцию элементов | заменяет всю коллекцию | удаляет всю коллекцию
+URI элемента http://<domain>
+<domain>/tasks/:taskId   | ошибка | возвращает элемент | обновляет элемент | удаляет элемент
 
 ## Data format
-
-application/json
-JSON
+Only JSON
 
 ### Element
 
@@ -38,38 +39,69 @@ JSON
 - **href** string uri элемента
 - **createdAt** date || timestamp дата создания елемента
 
-`GET //api.example.com/tasks/1`
+`GET http://<domain>/tasks/1`
 
 ```json
 {
     "id": 1,
-    "href": "//api.example.com/tasks/1",
-    "createdAt": 123,
-    "title": "titlestring",
+    "href": "http://<domain>/tasks/1",
+    "createdAt": 571352400000,
+    "title": "Task name",
     "owner": {
-        "href": "//api.example.com/users/1"
+        "href": "http://<domain>/users/1"
     }
+}
+```
+
+#### Elements
+
+`GET http://<domain>/tasks/<taskId, ...>,`
+
+`GET http://<domain>/tasks/1,2`
+
+```json
+{
+    "rows": [
+        {
+            "id": 1,
+            "href": "http://<domain>/tasks/1",
+            "createdAt": 571352400000,
+            "title": "Task name1",
+            "owner": {
+                "href": "http://<domain>/users/2"
+            }
+        },
+        {
+            "id": 2,
+            "href": "http://<domain>/tasks/2",
+            "createdAt": 571352400000,
+            "title": "Task name2",
+            "owner": {
+                "href": "http://<domain>/users/1"
+            }
+        }
+    ]
 }
 ```
 
 ### Reference element, collection
 
-- **referenceName** object 
- - **href** string resource uri 
+- **referenceName** object
+- **href** string resource uri 
 
 Элемент может иметь ссылку на другой элемент(владельца/пользователя) или коллекцию (метки,связанные задачи, пользователи), в этом случае элемент должен содержать имя и указатель на ресурс **owner.href**,  **labels.href**
 
 ```json
 {
     "id": 1,
-    "href": "//api.example.com/tasks/1",
-    "createdAt": 123,
-    "title": "titlestring",
+    "href": "http://<domain>/tasks/1",
+    "createdAt": 571352400000,
+    "title": "Task name",
     "owner": {
-        "href": "//api.example.com/users/1"
+        "href": "http://<domain>/users/1"
     },
     "labels": {
-        "href": "//api.example.com/tasks/1/labels"
+        "href": "http://<domain>/tasks/1/labels"
     }
 }
 ```
@@ -83,39 +115,39 @@ JSON
 - **offset** number  смещение коллекции
 - **collection** array of element коллекция элементов
 
-`GET //api.example.com/tasks?limit=30`
+`GET http://<domain>/tasks?limit=30`
 
 ```json
 {
     "total": 3,
     "limit": 30,
     "offset": 0,
-    "collection": [
+    "rows": [
         {
             "id": 1,
-            "href": "//api.example.com/tasks/1",
-            "createdAt": 123,
-            "title": "titlestring1",
+            "href": "http://<domain>/tasks/1",
+            "createdAt": 571352400000,
+            "title": "Task name1",
             "owner": {
-                "href": "//api.example.com/users/2"
+                "href": "http://<domain>/users/2"
             }
         },
         {
             "id": 2,
-            "href": "//api.example.com/tasks/2",
-            "createdAt": 123,
-            "title": "titlestring2",
+            "href": "http://<domain>/tasks/2",
+            "createdAt": 571352400000,
+            "title": "Task name2",
             "owner": {
-                "href": "//api.example.com/users/1"
+                "href": "http://<domain>/users/1"
             }
         },
         {
             "id": 2,
-            "href": "//api.example.com/tasks/3",
-            "createdAt": 123,
-            "title": "titlestring3",
+            "href": "http://<domain>/tasks/3",
+            "createdAt": 571352400000,
+            "title": "Task name3",
             "owner": {
-                "href": "//api.example.com/users/3"
+                "href": "http://<domain>/users/3"
             }
         }
     ]
@@ -131,7 +163,7 @@ JSON
     "total": 0,
     "limit": 30,
     "offset": 0,
-    "collection": []
+    "rows": []
 }
 ```
 
@@ -139,34 +171,33 @@ JSON
 
 ### Create element:
 
-`POST //api.example.comtasks`
+`POST http://<domain>/tasks`
 
-`POST //api.example.comtasks/:taskId/labels`
+`POST http://<domain>/tasks/:taskId/labels`
 
 ### Get element, collection:
 
-`GET //api.example.com/tasks/:taskId`
+`GET http://<domain>/tasks/:taskId`
 
-`GET //api.example.com/tasks/:taskId/labels`
+`GET http://<domain>/tasks/:taskId/labels`
 
 ### Update element, collection:
 
-`PUT //api.example.comtasks/:taskId`
+`PUT http://<domain>/tasks/:taskId`
 
-`PUT //api.example.comtasks/:taskId/labels`
+`PUT http://<domain>/tasks/:taskId/labels`
 
 ### Delete element, collection:
 
-`DELETE //api.example.comtasks/:taskId`
+`DELETE http://<domain>/tasks/:taskId`
 
-`DELETE //api.example.comtasks/:taskId/labels`
+`DELETE http://<domain>/tasks/:taskId/labels`
 
 ### Collection filter element
 
 Фильтр коллекции по `owner.id` [12,13,14]
 
-`GET //api.example.com/tasks?owner=12,13,14`
-
+`GET http://<domain>/tasks?owner=12,13,14`
 
 ## Expand reference element, collection 
 
@@ -176,51 +207,51 @@ JSON
 
 Так выглядит простой запрос за элементом и ответ:
 
-`GET //api.example.com/tasks/1`
+`GET http://<domain>/tasks/1`
 
 ```json
 {
     "id": 123,
-    "href": "//api.example.com/tasks/1",
-    "createdAt": 123,
-    "title": "titlestring",
+    "href": "http://<domain>/tasks/1",
+    "createdAt": 571352400000,
+    "title": "Task name",
     "owner": {
-        "href": "//api.example.com/users/1"
+        "href": "http://<domain>/users/1"
     },
     "labels": {
-        "href": "//api.example.com/tasks/1/labels"
+        "href": "http://<domain>/tasks/1/labels"
     }
 }
 ```
 
 Чтобы получить полную информацию **owner** и **labels**, выполняем запрос с **expand**=owner,labels в query params:
 
-`GET //api.example.com/tasks/1?expand=owner,labels`
+`GET http://<domain>/tasks/1?expand=owner,labels`
 
 ```json
 {
     "id": 123,
-    "href": "//api.example.com/tasks/1",
-    "createdAt": 123,
-    "title": "TodoTitle",
+    "href": "http://<domain>/tasks/1",
+    "createdAt": 571352400000,
+    "title": "Task name",
     "owner": {
         "id": 1,
-        "href": "//api.example.com/users/1",
-        "createdAt": 1234,
+        "href": "http://<domain>/users/1",
+        "createdAt": 571352400000,
         "fullName": "Jon Doe",
         "nickname": "jondoe"
     },
     "labels": {
-        "href": "//api.example.com/tasks/1/labels",
+        "href": "http://<domain>/tasks/1/labels",
         "total": 1,
         "limit": 10,
         "offset": 0,
-        "collection": [
+        "rows": [
             {
                 "id": 1,
-                "href": '//api.example.com',
-                "createdAt": 123,
-                "name": 'specapi'
+                "href": "//<domain>/labels/1",
+                "createdAt": 571352400000,
+                "name": "specapi"
             }
         ]
     }
@@ -235,38 +266,42 @@ JSON
 
 Например нам необходимы id, название и дата создания задачи
 
-`GET //api.example.com/tasks/1?fields=id,title,createdAt`
+`GET http://<domain>/tasks/1?fields=id,title,createdAt`
 
 ```json
 {
     "id": 1,
-    "createdAt": 123,
-    "title": "TodoTitle"
+    "createdAt": 571352400000,
+    "title": "Task name"
+    "href": "http://<domain>/tasks/1",
 }
 ```
 
-`GET //api.example.com/tasks?fields=id,title,createdAt`
+`GET http://<domain>/tasks?fields=id,title,createdAt`
 
 ```json
 {
     "total": 3,
     "limit": 25,
     "offset": 0,
-    "collection": [
+    "rows": [
         {
             "id": 1,
-            "createdAt": 121,
-            "title": "TodoTitle 1"
+            "createdAt": 571352400000,
+            "href": "http://<domain>/tasks/1",
+            "title": "Task name1"
         },
         {
             "id": 2,
-            "createdAt": 122,
-            "title": "TodoTitle 2"
+            "createdAt": 571352400000,
+            "href": "http://<domain>/tasks/2",
+            "title": "Task name2"
         },
         {
             "id": 3,
-            "createdAt": 123,
-            "title": "TodoTitle 3"
+            "createdAt": 571352400000,
+            "href": "http://<domain>/tasks/3",
+            "title": "Task name3"
         }
     ]
 }
@@ -283,15 +318,15 @@ JSON
 
 Example:
 
-`GET //api.example.com/tasks?order=createAt`
+`GET http://<domain>/tasks?order=createAt`
 
-`GET //api.example.com/tasks?order=createAt,id`
+`GET http://<domain>/tasks?order=createAt,id`
 
-`GET //api.example.com/tasks?order=createAt:desc`
+`GET http://<domain>/tasks?order=createAt:desc`
 
-`GET //api.example.com/tasks?order=createAt:desc,id:asc`
+`GET http://<domain>/tasks?order=createAt:desc,id:asc`
 
-### Limit, Offset
+### Paging, Limit, Offset
 
 Лимитирование коллекции
 
@@ -300,7 +335,7 @@ Example:
 
 Example:
 
-`GET //api.example.com/tasks?limit=10&offset=0`
+`GET http://<domain>/tasks?limit=10&offset=0`
 
 
 ## Errors
