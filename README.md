@@ -22,11 +22,8 @@ RESTful
 
 Resource | POST (create) | GET (read) | PUT (update) | DELETE (delete)
 --- | --- | --- | --- | ---
-URI коллекции http://<domain>
-<domain>/tasks <br/> http://<domain>
-<domain>/tasks/:taskId/labels | создает элемент в коллекции | возвращает коллекцию элементов | заменяет всю коллекцию | удаляет всю коллекцию
-URI элемента http://<domain>
-<domain>/tasks/:taskId   | ошибка | возвращает элемент | обновляет элемент | удаляет элемент
+URI коллекции http://<domain>/<resource> | создает элемент в коллекции | возвращает коллекцию элементов | заменяет всю коллекцию | удаляет всю коллекцию
+URI элемента http://<domain>/<resource>/<resourceId> | ошибка | возвращает элемент | обновляет элемент | удаляет элемент
 
 ## Data format
 Only JSON
