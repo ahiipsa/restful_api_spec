@@ -25,7 +25,6 @@
 | PUT       | Update    |
 | DELETE    | Delete    |
 
-
 | Resource | POST | GET | PUT | DELETE|
 | :--- | --- | --- | --- | --- |
 | `http://<domain>/<resources>`| Create | Read | Update | Delete |
