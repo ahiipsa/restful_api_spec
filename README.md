@@ -1,12 +1,12 @@
-## NextoneSpec
+## RESTful API Specification 
 
 - [API HTTP methods](#api-http-methods)
 - [Data format](#data-format)
  - [Element](#element)
  - [Collection](#collection)
- - [Reference element, collection](#reference-element-collection)
+ - [Reference resource, collection](#reference-resource-collection)
 - [Methods](#methods)
-- [Expand reference element, collection](#expand-reference-element-collection)
+- [Expand reference resource, collection](#expand-reference-resource-collection)
 - [Collection Order, Limit and Offset](#collection-order-limit-and-offset)
 - [Restrict Fields](#restrict-fields)
 - [Errors](#errors)
@@ -18,23 +18,29 @@
 
 ## API HTTP methods
 
-RESTful
+| HTTP      | Method    |
+| :--       | :--       |
+| POST      | Create    |
+| GET       | Read      |
+| PUT       | Update    |
+| DELETE    | Delete    |
 
-Resource | POST (create) | GET (read) | PUT (update) | DELETE (delete)
---- | --- | --- | --- | ---
-URI коллекции http://<domain>/<resource> | создает элемент в коллекции | возвращает коллекцию элементов | заменяет всю коллекцию | удаляет всю коллекцию
-URI элемента http://<domain>/<resource>/<resourceId> | ошибка | возвращает элемент | обновляет элемент | удаляет элемент
+
+| Resource | POST | GET | PUT | DELETE|
+| :--- | --- | --- | --- | --- |
+| `http://<domain>/<resources>`| Create | Read | Update | Delete |
+| `http://<domain>/<resources>/<resourceId>` | Update | Read | Update | Delete |
 
 ## Data format
 Only JSON
 
-### Element
+### Resource
 
-Обязательные параметры в элементе
+Обязательные параметры ресурса
 
-- **id** идентификатор элемента
+- **id** идентификатор ресурса
 - **href** string uri элемента
-- **createdAt** date || timestamp дата создания елемента
+- **createdAt** date || timestamp дата создания ресурса
 
 `GET http://<domain>/tasks/1`
 
@@ -50,9 +56,11 @@ Only JSON
 }
 ```
 
-#### Elements
+#### Resources
 
-`GET http://<domain>/tasks/<taskId, ...>,`
+`GET http://<domain>/<resources>/<resourceId1, resourceId2, ...>`
+
+Example:
 
 `GET http://<domain>/tasks/1,2`
 
@@ -81,12 +89,12 @@ Only JSON
 }
 ```
 
-### Reference element, collection
+### Reference resource, collection
 
 - **referenceName** object
 - **href** string resource uri 
 
-Элемент может иметь ссылку на другой элемент(владельца/пользователя) или коллекцию (метки,связанные задачи, пользователи), в этом случае элемент должен содержать имя и указатель на ресурс **owner.href**,  **labels.href**
+Ресурс может иметь ссылку на другой элемент(владельца/пользователя) или коллекцию (метки,связанные задачи, пользователи), в этом случае элемент должен содержать имя и указатель на ресурс **owner.href**,  **labels.href**
 
 ```json
 {
@@ -107,10 +115,12 @@ Only JSON
 
 Обязательные параметры в коллекции
 
-- **total** number количество элементов
-- **limit** number лимит размер коллекции default | limit
-- **offset** number  смещение коллекции
-- **collection** array of element коллекция элементов
+- **total** number общее количество ресурсов в коллекции
+- **limit** number лимит на размер возвращаемой коллекции default | limit
+- **offset** number смещение
+- **rows** array of resource массив ресурсов
+
+`GET http://<domain>/<resources>?limit=30`
 
 `GET http://<domain>/tasks?limit=30`
 
@@ -151,9 +161,7 @@ Only JSON
 }
 ```
 
-### Empty Collection 
-
-Если коллеция пустая, приходит ответ 200 с данными
+Если коллеция пустая:
 
 ```json
 {
@@ -166,62 +174,69 @@ Only JSON
 
 ## Methods
 
-### Create element:
+### Create resource:
+
+`POST http://<domain>/<resources>`
+
+Example:
 
 `POST http://<domain>/tasks`
 
-`POST http://<domain>/tasks/:taskId/labels`
+### Get resource or collection:
 
-### Get element, collection:
+`GET http://<domain>/<resources>`
 
-`GET http://<domain>/tasks/:taskId`
+`GET http://<domain>/<resources>/<resourceId>`
 
-`GET http://<domain>/tasks/:taskId/labels`
-
-### Update element, collection:
-
-`PUT http://<domain>/tasks/:taskId`
-
-`PUT http://<domain>/tasks/:taskId/labels`
-
-### Delete element, collection:
-
-`DELETE http://<domain>/tasks/:taskId`
-
-`DELETE http://<domain>/tasks/:taskId/labels`
-
-### Collection filter element
-
-Фильтр коллекции по `owner.id` [12,13,14]
-
-`GET http://<domain>/tasks?owner=12,13,14`
-
-## Expand reference element, collection 
-
-Раскрытие **ссылки** на **элемент** или **коллекцию**
-
-- **expand** [string[,...]]
-
-Так выглядит простой запрос за элементом и ответ:
+Example:
 
 `GET http://<domain>/tasks/1`
 
-```json
-{
-    "id": 123,
-    "href": "http://<domain>/tasks/1",
-    "createdAt": 571352400000,
-    "title": "Task name",
-    "owner": {
-        "href": "http://<domain>/users/1"
-    },
-    "labels": {
-        "href": "http://<domain>/tasks/1/labels"
-    }
-}
-```
+`GET http://<domain>/tasks/1/labels`
 
-Чтобы получить полную информацию **owner** и **labels**, выполняем запрос с **expand**=owner,labels в query params:
+### Update resource, collection:
+
+`PUT http://<domain>/<resources>/<resourceId>`
+
+`PUT http://<domain>/<resources>/<resourceId>/<resources>`
+
+Example:
+
+`PUT http://<domain>/tasks/1`
+
+`PUT http://<domain>/tasks/1/labels`
+
+### Delete resource, collection:
+
+`DELETE http://<domain>/<resources>/<resourceId>`
+
+`DELETE http://<domain>/<resources>/<resourceId>/<resources>`
+
+Example:
+
+`DELETE http://<domain>/tasks/1`
+
+`DELETE http://<domain>/tasks/1/labels`
+
+### Collection filter resources
+
+Фильтр коллекции по `owner.id` [12,13,14]
+
+`GET http://<domain>/<resources>?<field>=<value,...>`
+
+Example:
+
+`GET http://<domain>/tasks?owner=12,13,14`
+
+## Expand reference resource, collection 
+
+Раскрытие **ссылки** на **ресурс** или **коллекцию**
+
+- **expand** [string[,...]]
+
+`GET http://<domain>/<resources>/<resourceId>?expand=<field1,...>`
+
+Чтобы получить полную информацию **owner** и **labels**, выполняем запрос с **expand**=owner,labels:
 
 `GET http://<domain>/tasks/1?expand=owner,labels`
 
@@ -261,6 +276,10 @@ Only JSON
 
 - **fields** [string[,...]]
 
+`GET http://<domain>/<resources>?fields=<field1,field2,...>`
+
+`GET http://<domain>/<resources>/<resourceId>?fields=<field1,field2,...>`
+
 Например нам необходимы id, название и дата создания задачи
 
 `GET http://<domain>/tasks/1?fields=id,title,createdAt`
@@ -269,7 +288,7 @@ Only JSON
 {
     "id": 1,
     "createdAt": 571352400000,
-    "title": "Task name"
+    "title": "Task name",
     "href": "http://<domain>/tasks/1",
 }
 ```
@@ -313,6 +332,8 @@ Only JSON
 
 - **order** [string[:desc|asc]]
 
+`GET http://<domain>/<resources>?order=<field[:desc|:asc], ...>`
+
 Example:
 
 `GET http://<domain>/tasks?order=createAt`
@@ -329,6 +350,8 @@ Example:
 
 - **limit** number
 - **offset** number
+
+`GET http://<domain>/<resources>?limit=<int>&offset=<int>`
 
 Example:
 
