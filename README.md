@@ -368,7 +368,8 @@ Example:
 
 ```json
 {
-    "messageCode": "MESSAGE_CODE"
+    "statusCode": 400,
+    "errorCode": "MESSAGE_CODE",
     "message": "Some error message"
 }
 ```
