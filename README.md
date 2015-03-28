@@ -2,12 +2,12 @@
 
 - [API HTTP methods](#api-http-methods)
 - [Data format](#data-format)
- - [Element](#element)
+ - [Resource](#resource)
  - [Collection](#collection)
  - [Reference resource, collection](#reference-resource-collection)
 - [Methods](#methods)
 - [Expand reference resource, collection](#expand-reference-resource-collection)
-- [Collection Order, Limit and Offset](#collection-order-limit-and-offset)
+- [Collection Sort, Limit and Offset](#collection-sort-limit-and-offset)
 - [Restrict Fields](#restrict-fields)
 - [Errors](#errors)
  - [400 Bad request](#400-bad-request)
@@ -31,15 +31,15 @@
 | `http://<domain>/<resources>/<resourceId>` | Update | Read | Update | Delete |
 
 ## Data format
-Only JSON
+JSON
 
 ### Resource
 
 Обязательные параметры ресурса
 
-- **id** идентификатор ресурса
-- **href** string uri элемента
-- **createdAt** date || timestamp дата создания ресурса
+- **id** [`integer`|`string`] идентификатор ресурса
+- **href** `string` uri ресурса
+- **createdAt** [`integer`] дата создания ресурса timestamp
 
 `GET http://<domain>/tasks/1`
 
@@ -48,7 +48,7 @@ Only JSON
     "id": 1,
     "href": "http://<domain>/tasks/1",
     "createdAt": 571352400000,
-    "title": "Task name",
+    "name": "Task name",
     "owner": {
         "href": "http://<domain>/users/1"
     }
@@ -70,7 +70,7 @@ Example:
             "id": 1,
             "href": "http://<domain>/tasks/1",
             "createdAt": 571352400000,
-            "title": "Task name1",
+            "name": "Task name1",
             "owner": {
                 "href": "http://<domain>/users/2"
             }
@@ -79,7 +79,7 @@ Example:
             "id": 2,
             "href": "http://<domain>/tasks/2",
             "createdAt": 571352400000,
-            "title": "Task name2",
+            "name": "Task name2",
             "owner": {
                 "href": "http://<domain>/users/1"
             }
@@ -90,17 +90,17 @@ Example:
 
 ### Reference resource, collection
 
-- **referenceName** object
-- **href** string resource uri 
+- **resourceName** `object` имя ресурса
+-- **resourceName.href** `string` uri ресурса
 
-Ресурс может иметь ссылку на другой элемент(владельца/пользователя) или коллекцию (метки,связанные задачи, пользователи), в этом случае элемент должен содержать имя и указатель на ресурс **owner.href**,  **labels.href**
+Ресурс может иметь ссылку на другой ресурс (пользователя, событие) или коллекцию (метки, связанные задачи, пользователи), в этом случае ресурс должен содержать имя и указатель на ресурс **owner.href**,  **labels.href**
 
 ```json
 {
     "id": 1,
     "href": "http://<domain>/tasks/1",
     "createdAt": 571352400000,
-    "title": "Task name",
+    "name": "Task name",
     "owner": {
         "href": "http://<domain>/users/1"
     },
@@ -114,10 +114,10 @@ Example:
 
 Обязательные параметры в коллекции
 
-- **total** number общее количество ресурсов в коллекции
-- **limit** number лимит на размер возвращаемой коллекции default | limit
-- **offset** number смещение
-- **rows** array of resource массив ресурсов
+- **total** `integer` общее количество ресурсов в коллекции
+- **limit** `integer` лимит на размер возвращаемой коллекции (значение установленное по умолчанию или переденнное через query params)
+- **offset** `integer` смещение (значение установленное по умолчанию или переденнное через query params)
+- **rows** `array` массив ресурсов
 
 `GET http://<domain>/<resources>?limit=30`
 
@@ -133,7 +133,7 @@ Example:
             "id": 1,
             "href": "http://<domain>/tasks/1",
             "createdAt": 571352400000,
-            "title": "Task name1",
+            "name": "Task name1",
             "owner": {
                 "href": "http://<domain>/users/2"
             }
@@ -142,7 +142,7 @@ Example:
             "id": 2,
             "href": "http://<domain>/tasks/2",
             "createdAt": 571352400000,
-            "title": "Task name2",
+            "name": "Task name2",
             "owner": {
                 "href": "http://<domain>/users/1"
             }
@@ -151,7 +151,7 @@ Example:
             "id": 2,
             "href": "http://<domain>/tasks/3",
             "createdAt": 571352400000,
-            "title": "Task name3",
+            "name": "Task name3",
             "owner": {
                 "href": "http://<domain>/users/3"
             }
@@ -219,7 +219,7 @@ Example:
 
 ### Collection filter resources
 
-Фильтр коллекции по `owner.id` [12,13,14]
+Фильтр коллекции по **owner.id** [12,13,14]
 
 `GET http://<domain>/<resources>?<field>=<value,...>`
 
@@ -231,7 +231,7 @@ Example:
 
 Раскрытие **ссылки** на **ресурс** или **коллекцию**
 
-- **expand** [string[,...]]
+- **expand** [`string`[, ...]] имя ресурса или коллекции
 
 `GET http://<domain>/<resources>/<resourceId>?expand=<field1,...>`
 
@@ -244,7 +244,7 @@ Example:
     "id": 123,
     "href": "http://<domain>/tasks/1",
     "createdAt": 571352400000,
-    "title": "Task name",
+    "name": "Task name",
     "owner": {
         "id": 1,
         "href": "http://<domain>/users/1",
@@ -273,26 +273,24 @@ Example:
 
 Ограничение списка возвращаемых параметров
 
-- **fields** [string[,...]]
+- **fields** [`string`[, ...]] имя параметра
 
 `GET http://<domain>/<resources>?fields=<field1,field2,...>`
 
 `GET http://<domain>/<resources>/<resourceId>?fields=<field1,field2,...>`
 
-Например нам необходимы id, название и дата создания задачи
+Например нам необходимы `id`, `название` задачи
 
-`GET http://<domain>/tasks/1?fields=id,title,createdAt`
+`GET http://<domain>/tasks/1?fields=id,name`
 
 ```json
 {
     "id": 1,
-    "createdAt": 571352400000,
-    "title": "Task name",
-    "href": "http://<domain>/tasks/1",
+    "name": "Task name"
 }
 ```
 
-`GET http://<domain>/tasks?fields=id,title,createdAt`
+`GET http://<domain>/tasks?fields=id,name`
 
 ```json
 {
@@ -302,69 +300,75 @@ Example:
     "rows": [
         {
             "id": 1,
-            "createdAt": 571352400000,
-            "href": "http://<domain>/tasks/1",
-            "title": "Task name1"
+            "name": "Task name 1"
         },
         {
             "id": 2,
-            "createdAt": 571352400000,
-            "href": "http://<domain>/tasks/2",
-            "title": "Task name2"
+            "name": "Task name 2"
         },
         {
             "id": 3,
-            "createdAt": 571352400000,
-            "href": "http://<domain>/tasks/3",
-            "title": "Task name3"
+            "name": "Task name 3"
         }
     ]
 }
 
 ```
 
-## Collection Order, Limit and Offset
-
-### Order
-
-Сортировка коллекции по свойствам
-
-- **order** [string[:desc|asc]]
-
-`GET http://<domain>/<resources>?order=<field[:desc|:asc], ...>`
-
-Example:
-
-`GET http://<domain>/tasks?order=createAt`
-
-`GET http://<domain>/tasks?order=createAt,id`
-
-`GET http://<domain>/tasks?order=createAt:desc`
-
-`GET http://<domain>/tasks?order=createAt:desc,id:asc`
+## Collection Sort, Limit and Offset
 
 ### Paging, Limit, Offset
 
-Лимитирование коллекции
+Лимитирование коллекции ресурсов
 
-- **limit** number
-- **offset** number
+- **limit** `integer` размер возвращаемой коллекции
+- **offset** `integer` смещение
 
 `GET http://<domain>/<resources>?limit=<int>&offset=<int>`
 
 Example:
 
-`GET http://<domain>/tasks?limit=10&offset=0`
+`GET http://<domain>/tasks?limit=10`
+
+`GET http://<domain>/tasks?offset=10`
+
+`GET http://<domain>/tasks?limit=10&offset=10`
+
+
+### Sort
+
+Сортировка коллекции по параметрам 
+
+- **sort** [`string`[:desc|asc]]
+
+`GET http://<domain>/<resources>?sort=<field[:desc|:asc], ...>`
+
+Example:
+
+`GET http://<domain>/tasks?sort=createAt`
+
+`GET http://<domain>/tasks?sort=createAt:desc`
+
+`GET http://<domain>/tasks?sort=createAt:asc`
+
+`GET http://<domain>/tasks?sort=createAt,id`
+
+`GET http://<domain>/tasks?sort=createAt:desc,name`
+
+`GET http://<domain>/tasks?sort=createAt:asc,name:desc`
 
 
 ## Errors
 
 Обязательный параметры
 
-- **message** string сообщение об ошибке
+- **message** `string` сообщение об ошибке
+- **statusCode** `integer` статус код
+- **errorCode** `string` код ошибки
 
 ```json
 {
+    "messageCode": "MESSAGE_CODE"
     "message": "Some error message"
 }
 ```
@@ -373,12 +377,16 @@ Example:
 
 ```json
 {
+    "statusCode": 400,
+    "errorCode": "BAD_REQUEST",
     "message": "Bad request"
 }
 ```
 
 ```json
 {
+    "statusCode": 400,
+    "errorCode": "BAD_REQUEST",
     "message": "Bad request",
     "errors": [
         {
@@ -395,6 +403,8 @@ Example:
 
 ```json
 {
+    "statusCode": 401,
+    "errorCode": "UNAUTHORIZED",
     "message": "Unauthorized"
 }
 ```
@@ -402,6 +412,8 @@ Example:
 ### 403 Permission Denied
 ```json
 {
+    "statusCode": 403,
+    "errorCode": "PERMISSION_DENIED",
     "message": "Permission Denied"
 }
 ```
@@ -410,6 +422,8 @@ Example:
 
 ```json
 {
+    "statusCode": 400,
+    "errorCode": "NOT_FOUND",
     "message": "Not found"
 }
 ```
@@ -421,6 +435,8 @@ Example:
 
 ```json
 {
+    "statusCode": 409,
+    "errorCode": "CONFLICT",
     "message": "Conflict"
 }
 ```
@@ -429,6 +445,8 @@ Example:
 
 ```json
 {
+    "statusCode": 500,
+    "errorCode": "INTERNAL_ERROR",
     "message": "Internal error"
 }
 ```
