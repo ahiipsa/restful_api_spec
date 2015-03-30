@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="RESTful API Specification : ">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>RESTful API Specification</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/ahiipsa/restful_api_spec">View on GitHub</a>
+
+          <h1 id="project_title">RESTful API Specification</h1>
+          <h2 id="project_tagline"></h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/ahiipsa/restful_api_spec/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/ahiipsa/restful_api_spec/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h2>
+<a id="restful-api-specification" class="anchor" href="#restful-api-specification" aria-hidden="true"><span class="octicon octicon-link"></span></a>RESTful API Specification</h2>
+
+<ul>
+<li><a href="#api-http-methods">API HTTP methods</a></li>
+<li>
+<a href="#data-format">Data format</a>
+
+<ul>
+<li><a href="#resource">Resource</a></li>
+<li><a href="#collection">Collection</a></li>
+<li><a href="#reference-resource-collection">Reference resource, collection</a></li>
+</ul>
+</li>
+<li><a href="#methods">Methods</a></li>
+<li><a href="#expand-reference-resource-collection">Expand reference resource, collection</a></li>
+<li><a href="#collection-sort-limit-and-offset">Collection Sort, Limit and Offset</a></li>
+<li><a href="#restrict-fields">Restrict Fields</a></li>
+<li>
+<a href="#errors">Errors</a>
+
+<ul>
+<li><a href="#400-bad-request">400 Bad request</a></li>
+<li><a href="#401-unauthorized">401 Unauthorized</a></li>
+<li><a href="#403-permission-denied">403 Permission denied</a></li>
+<li><a href="#409-conflict">409 Conflict</a></li>
+<li><a href="#500-internal-error">500 Internal error</a></li>
+</ul>
+</li>
+</ul>
+
+<h2>
+<a id="api-http-methods" class="anchor" href="#api-http-methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>API HTTP methods</h2>
+
+<table>
+<thead>
+<tr>
+<th align="left">HTTP</th>
+<th align="left">Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">POST</td>
+<td align="left">Create</td>
+</tr>
+<tr>
+<td align="left">GET</td>
+<td align="left">Read</td>
+</tr>
+<tr>
+<td align="left">PUT</td>
+<td align="left">Update</td>
+</tr>
+<tr>
+<td align="left">DELETE</td>
+<td align="left">Delete</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr>
+<th align="left">Resource</th>
+<th>POST</th>
+<th>GET</th>
+<th>PUT</th>
+<th>DELETE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>http://&lt;domain&gt;/&lt;resources&gt;</code></td>
+<td>create</td>
+<td>read</td>
+<td>update</td>
+<td>delete</td>
+</tr>
+<tr>
+<td align="left"><code>http://&lt;domain&gt;/&lt;resources&gt;/&lt;resourceId&gt;</code></td>
+<td>update</td>
+<td>read</td>
+<td>update</td>
+<td>delete</td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="data-format" class="anchor" href="#data-format" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data format</h2>
+
+<p>JSON</p>
+
+<h3>
+<a id="resource" class="anchor" href="#resource" aria-hidden="true"><span class="octicon octicon-link"></span></a>Resource</h3>
+
+<p>Обязательные параметры ресурса</p>
+
+<ul>
+<li>
+<strong>id</strong> [<code>integer</code>|<code>string</code>] идентификатор ресурса</li>
+<li>
+<strong>href</strong> <code>string</code> uri ресурса</li>
+<li>
+<strong>createdAt</strong> [<code>integer</code>] дата создания ресурса timestamp</li>
+</ul>
+
+<p><code>GET http://&lt;domain&gt;/tasks/1</code></p>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">1</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>href<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://&lt;domain&gt;/tasks/1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>createdAt<span class="pl-pds">"</span></span>: <span class="pl-c1">571352400000</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Task name<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>owner<span class="pl-pds">"</span></span>: {
+        <span class="pl-s"><span class="pl-pds">"</span>href<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://&lt;domain&gt;/users/1<span class="pl-pds">"</span></span>
+    }
+}</pre></div>
+
+<h4>
+<a id="resources" class="anchor" href="#resources" aria-hidden="true"><span class="octicon octicon-link"></span></a>Resources</h4>
+
+<p><code>GET http://&lt;domain&gt;/&lt;resources&gt;/&lt;resourceId1, resourceId2, ...&gt;</code></p>
+
+<p>Example:</p>
+
+<p><code>GET http://&lt;domain&gt;/tasks/1,2</code></p>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>rows<span class="pl-pds">"</span></span>: [
+        {
+            <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">1</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>href<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://&lt;domain&gt;/tasks/1<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>createdAt<span class="pl-pds">"</span></span>: <span class="pl-c1">571352400000</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Task name1<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>owner<span class="pl-pds">"</span></span>: {
+                <span class="pl-s"><span class="pl-pds">"</span>href<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://&lt;domain&gt;/users/2<span class="pl-pds">"</span></span>
+            }
+        },
+        {
+            <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">2</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>href<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://&lt;domain&gt;/tasks/2<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>createdAt<span class="pl-pds">"</span></span>: <span class="pl-c1">571352400000</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Task name2<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>owner<span class="pl-pds">"</span></span>: {
+                <span class="pl-s"><span class="pl-pds">"</span>href<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://&lt;domain&gt;/users/1<span class="pl-pds">"</span></span>
+            }
+        }
+    ]
+}</pre></div>
+
+<h3>
+<a id="reference-resource-collection" class="anchor" href="#reference-resource-collection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Reference resource, collection</h3>
+
+<ul>
+<li>
+<strong>resourceName</strong> <code>object</code> имя ресурса
+
+<ul>
+<li>
+<strong>resourceName.href</strong> <code>string</code> uri ресурса</li>
+</ul>
+</li>
+</ul>
+
+<p>Ресурс может иметь ссылку на другой ресурс (пользователя, событие) или коллекцию (метки, связанные задачи, пользователи), в этом случае ресурс должен содержать имя и указатель на ресурс <strong>owner.href</strong>,  <strong>labels.href</strong></p>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">1</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>href<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://&lt;domain&gt;/tasks/1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>createdAt<span class="pl-pds">"</span></span>: <span class="pl-c1">571352400000</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Task name<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>owner<span class="pl-pds">"</span></span>: {
+        <span class="pl-s"><span class="pl-pds">"</span>href<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://&lt;domain&gt;/users/1<span class="pl-pds">"</span></span>
+    },
+    <span class="pl-s"><span class="pl-pds">"</span>labels<span class="pl-pds">"</span></span>: {
+        <span class="pl-s"><span class="pl-pds">"</span>href<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://&lt;domain&gt;/tasks/1/labels<span class="pl-pds">"</span></span>
+    }
+}</pre></div>
+
+<h3>
+<a id="collection" class="anchor" href="#collection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Collection</h3>
+
+<p>Обязательные параметры в коллекции</p>
+
+<ul>
+<li>
+<strong>total</strong> <code>integer</code> общее количество ресурсов в коллекции</li>
+<li>
+<strong>limit</strong> <code>integer</code> лимит на размер возвращаемой коллекции (значение установленное по умолчанию или переденнное через query params)</li>
+<li>
+<strong>offset</strong> <code>integer</code> смещение (значение установленное по умолчанию или переденнное через query params)</li>
+<li>
+<strong>rows</strong> <code>array</code> массив ресурсов</li>
+</ul>
+
+<p><code>GET http://&lt;domain&gt;/&lt;resources&gt;?limit=30</code></p>
+
+<p><code>GET http://&lt;domain&gt;/tasks?limit=30</code></p>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>total<span class="pl-pds">"</span></span>: <span class="pl-c1">3</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>limit<span class="pl-pds">"</span></span>: <span class="pl-c1">30</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>offset<span class="pl-pds">"</span></span>: <span class="pl-c1">0</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>rows<span class="pl-pds">"</span></span>: [
+        {
+            <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">1</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>href<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://&lt;domain&gt;/tasks/1<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>createdAt<span class="pl-pds">"</span></span>: <span class="pl-c1">571352400000</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Task name1<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>owner<span class="pl-pds">"</span></span>: {
+                <span class="pl-s"><span class="pl-pds">"</span>href<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://&lt;domain&gt;/users/2<span class="pl-pds">"</span></span>
+            }
+        },
+        {
+            <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">2</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>href<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://&lt;domain&gt;/tasks/2<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>createdAt<span class="pl-pds">"</span></span>: <span class="pl-c1">571352400000</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Task name2<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>owner<span class="pl-pds">"</span></span>: {
+                <span class="pl-s"><span class="pl-pds">"</span>href<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://&lt;domain&gt;/users/1<span class="pl-pds">"</span></span>
+            }
+        },
+        {
+            <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">2</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>href<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://&lt;domain&gt;/tasks/3<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>createdAt<span class="pl-pds">"</span></span>: <span class="pl-c1">571352400000</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Task name3<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>owner<span class="pl-pds">"</span></span>: {
+                <span class="pl-s"><span class="pl-pds">"</span>href<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://&lt;domain&gt;/users/3<span class="pl-pds">"</span></span>
+            }
+        }
+    ]
+}</pre></div>
+
+<p>Если коллеция пустая:</p>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>total<span class="pl-pds">"</span></span>: <span class="pl-c1">0</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>limit<span class="pl-pds">"</span></span>: <span class="pl-c1">30</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>offset<span class="pl-pds">"</span></span>: <span class="pl-c1">0</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>rows<span class="pl-pds">"</span></span>: []
+}</pre></div>
+
+<h2>
+<a id="methods" class="anchor" href="#methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>Methods</h2>
+
+<h3>
+<a id="create-resource" class="anchor" href="#create-resource" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create resource:</h3>
+
+<p><code>POST http://&lt;domain&gt;/&lt;resources&gt;</code></p>
+
+<p>Example:</p>
+
+<p><code>POST http://&lt;domain&gt;/tasks</code></p>
+
+<h3>
+<a id="get-resource-or-collection" class="anchor" href="#get-resource-or-collection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get resource or collection:</h3>
+
+<p><code>GET http://&lt;domain&gt;/&lt;resources&gt;</code></p>
+
+<p><code>GET http://&lt;domain&gt;/&lt;resources&gt;/&lt;resourceId&gt;</code></p>
+
+<p>Example:</p>
+
+<p><code>GET http://&lt;domain&gt;/tasks/1</code></p>
+
+<p><code>GET http://&lt;domain&gt;/tasks/1/labels</code></p>
+
+<h3>
+<a id="update-resource-collection" class="anchor" href="#update-resource-collection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Update resource, collection:</h3>
+
+<p><code>PUT http://&lt;domain&gt;/&lt;resources&gt;/&lt;resourceId&gt;</code></p>
+
+<p><code>PUT http://&lt;domain&gt;/&lt;resources&gt;/&lt;resourceId&gt;/&lt;resources&gt;</code></p>
+
+<p>Example:</p>
+
+<p><code>PUT http://&lt;domain&gt;/tasks/1</code></p>
+
+<p><code>PUT http://&lt;domain&gt;/tasks/1/labels</code></p>
+
+<h3>
+<a id="delete-resource-collection" class="anchor" href="#delete-resource-collection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Delete resource, collection:</h3>
+
+<p><code>DELETE http://&lt;domain&gt;/&lt;resources&gt;/&lt;resourceId&gt;</code></p>
+
+<p><code>DELETE http://&lt;domain&gt;/&lt;resources&gt;/&lt;resourceId&gt;/&lt;resources&gt;</code></p>
+
+<p>Example:</p>
+
+<p><code>DELETE http://&lt;domain&gt;/tasks/1</code></p>
+
+<p><code>DELETE http://&lt;domain&gt;/tasks/1/labels</code></p>
+
+<h3>
+<a id="collection-filter-resources" class="anchor" href="#collection-filter-resources" aria-hidden="true"><span class="octicon octicon-link"></span></a>Collection filter resources</h3>
+
+<p>Фильтр коллекции по <strong>owner.id</strong> [12,13,14]</p>
+
+<p><code>GET http://&lt;domain&gt;/&lt;resources&gt;?&lt;field&gt;=&lt;value,...&gt;</code></p>
+
+<p>Example:</p>
+
+<p><code>GET http://&lt;domain&gt;/tasks?owner=12,13,14</code></p>
+
+<h2>
+<a id="expand-reference-resource-collection" class="anchor" href="#expand-reference-resource-collection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Expand reference resource, collection</h2>
+
+<p>Раскрытие <strong>ссылки</strong> на <strong>ресурс</strong> или <strong>коллекцию</strong></p>
+
+<ul>
+<li>
+<strong>expand</strong> [<code>string</code>[, ...]] имя ресурса или коллекции</li>
+</ul>
+
+<p><code>GET http://&lt;domain&gt;/&lt;resources&gt;/&lt;resourceId&gt;?expand=&lt;field1,...&gt;</code></p>
+
+<p>Чтобы получить полную информацию <strong>owner</strong> и <strong>labels</strong>, выполняем запрос с <strong>expand</strong>=owner,labels:</p>
+
+<p><code>GET http://&lt;domain&gt;/tasks/1?expand=owner,labels</code></p>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">123</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>href<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://&lt;domain&gt;/tasks/1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>createdAt<span class="pl-pds">"</span></span>: <span class="pl-c1">571352400000</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Task name<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>owner<span class="pl-pds">"</span></span>: {
+        <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">1</span>,
+        <span class="pl-s"><span class="pl-pds">"</span>href<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://&lt;domain&gt;/users/1<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>createdAt<span class="pl-pds">"</span></span>: <span class="pl-c1">571352400000</span>,
+        <span class="pl-s"><span class="pl-pds">"</span>fullName<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Jon Doe<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>nickname<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>jondoe<span class="pl-pds">"</span></span>
+    },
+    <span class="pl-s"><span class="pl-pds">"</span>labels<span class="pl-pds">"</span></span>: {
+        <span class="pl-s"><span class="pl-pds">"</span>href<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://&lt;domain&gt;/tasks/1/labels<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>total<span class="pl-pds">"</span></span>: <span class="pl-c1">1</span>,
+        <span class="pl-s"><span class="pl-pds">"</span>limit<span class="pl-pds">"</span></span>: <span class="pl-c1">10</span>,
+        <span class="pl-s"><span class="pl-pds">"</span>offset<span class="pl-pds">"</span></span>: <span class="pl-c1">0</span>,
+        <span class="pl-s"><span class="pl-pds">"</span>rows<span class="pl-pds">"</span></span>: [
+            {
+                <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">1</span>,
+                <span class="pl-s"><span class="pl-pds">"</span>href<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>//&lt;domain&gt;/labels/1<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>createdAt<span class="pl-pds">"</span></span>: <span class="pl-c1">571352400000</span>,
+                <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>specapi<span class="pl-pds">"</span></span>
+            }
+        ]
+    }
+}</pre></div>
+
+<h2>
+<a id="restrict-fields" class="anchor" href="#restrict-fields" aria-hidden="true"><span class="octicon octicon-link"></span></a>Restrict Fields</h2>
+
+<p>Ограничение списка возвращаемых параметров</p>
+
+<ul>
+<li>
+<strong>fields</strong> [<code>string</code>[, ...]] имя параметра</li>
+</ul>
+
+<p><code>GET http://&lt;domain&gt;/&lt;resources&gt;?fields=&lt;field1,field2,...&gt;</code></p>
+
+<p><code>GET http://&lt;domain&gt;/&lt;resources&gt;/&lt;resourceId&gt;?fields=&lt;field1,field2,...&gt;</code></p>
+
+<p>Например нам необходимы <code>id</code>, <code>название</code> задачи</p>
+
+<p><code>GET http://&lt;domain&gt;/tasks/1?fields=id,name</code></p>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">1</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Task name<span class="pl-pds">"</span></span>
+}</pre></div>
+
+<p><code>GET http://&lt;domain&gt;/tasks?fields=id,name</code></p>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>total<span class="pl-pds">"</span></span>: <span class="pl-c1">3</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>limit<span class="pl-pds">"</span></span>: <span class="pl-c1">25</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>offset<span class="pl-pds">"</span></span>: <span class="pl-c1">0</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>rows<span class="pl-pds">"</span></span>: [
+        {
+            <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">1</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Task name 1<span class="pl-pds">"</span></span>
+        },
+        {
+            <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">2</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Task name 2<span class="pl-pds">"</span></span>
+        },
+        {
+            <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">3</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Task name 3<span class="pl-pds">"</span></span>
+        }
+    ]
+}
+</pre></div>
+
+<h2>
+<a id="collection-sort-limit-and-offset" class="anchor" href="#collection-sort-limit-and-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>Collection Sort, Limit and Offset</h2>
+
+<h3>
+<a id="paging-limit-offset" class="anchor" href="#paging-limit-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>Paging, Limit, Offset</h3>
+
+<p>Лимитирование коллекции ресурсов</p>
+
+<ul>
+<li>
+<strong>limit</strong> <code>integer</code> размер возвращаемой коллекции</li>
+<li>
+<strong>offset</strong> <code>integer</code> смещение</li>
+</ul>
+
+<p><code>GET http://&lt;domain&gt;/&lt;resources&gt;?limit=&lt;int&gt;&amp;offset=&lt;int&gt;</code></p>
+
+<p>Example:</p>
+
+<p><code>GET http://&lt;domain&gt;/tasks?limit=10</code></p>
+
+<p><code>GET http://&lt;domain&gt;/tasks?offset=10</code></p>
+
+<p><code>GET http://&lt;domain&gt;/tasks?limit=10&amp;offset=10</code></p>
+
+<h3>
+<a id="sort" class="anchor" href="#sort" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sort</h3>
+
+<p>Сортировка коллекции по параметрам </p>
+
+<ul>
+<li>
+<strong>sort</strong> [<code>string</code>[:desc|asc]]</li>
+</ul>
+
+<p><code>GET http://&lt;domain&gt;/&lt;resources&gt;?sort=&lt;field[:desc|:asc], ...&gt;</code></p>
+
+<p>Example:</p>
+
+<p><code>GET http://&lt;domain&gt;/tasks?sort=createAt</code></p>
+
+<p><code>GET http://&lt;domain&gt;/tasks?sort=createAt:desc</code></p>
+
+<p><code>GET http://&lt;domain&gt;/tasks?sort=createAt:asc</code></p>
+
+<p><code>GET http://&lt;domain&gt;/tasks?sort=createAt,id</code></p>
+
+<p><code>GET http://&lt;domain&gt;/tasks?sort=createAt:desc,name</code></p>
+
+<p><code>GET http://&lt;domain&gt;/tasks?sort=createAt:asc,name:desc</code></p>
+
+<h2>
+<a id="errors" class="anchor" href="#errors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Errors</h2>
+
+<p>Обязательный параметры</p>
+
+<ul>
+<li>
+<strong>statusCode</strong> <code>integer</code> статус код</li>
+<li>
+<strong>errorCode</strong> <code>string</code> код ошибки</li>
+<li>
+<strong>message</strong> <code>string</code> сообщение об ошибке</li>
+</ul>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>statusCode<span class="pl-pds">"</span></span>: <span class="pl-c1">400</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>errorCode<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>MESSAGE_CODE<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Some error message<span class="pl-pds">"</span></span>
+}</pre></div>
+
+<h3>
+<a id="400-bad-request" class="anchor" href="#400-bad-request" aria-hidden="true"><span class="octicon octicon-link"></span></a>400 Bad request</h3>
+
+<p>Не валидный запрос</p>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>statusCode<span class="pl-pds">"</span></span>: <span class="pl-c1">400</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>errorCode<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>BAD_REQUEST<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Bad request<span class="pl-pds">"</span></span>
+}</pre></div>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>statusCode<span class="pl-pds">"</span></span>: <span class="pl-c1">400</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>errorCode<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>BAD_REQUEST<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Bad request<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>errors<span class="pl-pds">"</span></span>: [
+        {
+            <span class="pl-s"><span class="pl-pds">"</span>property<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>data.email<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>value<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>example@@invalid.com<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>does not conform to the 'email' format<span class="pl-pds">"</span></span>
+        }
+    ]
+}</pre></div>
+
+<h3>
+<a id="401-unauthorized" class="anchor" href="#401-unauthorized" aria-hidden="true"><span class="octicon octicon-link"></span></a>401 Unauthorized</h3>
+
+<p>Необходима авторазация</p>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>statusCode<span class="pl-pds">"</span></span>: <span class="pl-c1">401</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>errorCode<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>UNAUTHORIZED<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Unauthorized<span class="pl-pds">"</span></span>
+}</pre></div>
+
+<h3>
+<a id="403-permission-denied" class="anchor" href="#403-permission-denied" aria-hidden="true"><span class="octicon octicon-link"></span></a>403 Permission Denied</h3>
+
+<p>Доступ рапрещен</p>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>statusCode<span class="pl-pds">"</span></span>: <span class="pl-c1">403</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>errorCode<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>PERMISSION_DENIED<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Permission Denied<span class="pl-pds">"</span></span>
+}</pre></div>
+
+<h3>
+<a id="404-not-found" class="anchor" href="#404-not-found" aria-hidden="true"><span class="octicon octicon-link"></span></a>404 Not found</h3>
+
+<p>Ресурс не найден</p>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>statusCode<span class="pl-pds">"</span></span>: <span class="pl-c1">404</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>errorCode<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>NOT_FOUND_RESOURCE<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Not found resource<span class="pl-pds">"</span></span>
+}</pre></div>
+
+<p>Не существующий путь</p>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>statusCode<span class="pl-pds">"</span></span>: <span class="pl-c1">404</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>errorCode<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>NOT_FOUND_ROUTE<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Not found route<span class="pl-pds">"</span></span>
+}</pre></div>
+
+<h3>
+<a id="409-conflict" class="anchor" href="#409-conflict" aria-hidden="true"><span class="octicon octicon-link"></span></a>409 Conflict</h3>
+
+<ul>
+<li>пользователь с таким именен существует</li>
+<li>...</li>
+</ul>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>statusCode<span class="pl-pds">"</span></span>: <span class="pl-c1">409</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>errorCode<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>CONFLICT_ERROR<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Conflict error<span class="pl-pds">"</span></span>
+}</pre></div>
+
+<h3>
+<a id="500-internal-error" class="anchor" href="#500-internal-error" aria-hidden="true"><span class="octicon octicon-link"></span></a>500 Internal error</h3>
+
+<p>Что то пошло не так</p>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>statusCode<span class="pl-pds">"</span></span>: <span class="pl-c1">500</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>errorCode<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>INTERNAL_SERVER_ERROR<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Internal server error<span class="pl-pds">"</span></span>
+}</pre></div>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">RESTful API Specification maintained by <a href="https://github.com/ahiipsa">ahiipsa</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
