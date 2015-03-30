@@ -27,8 +27,8 @@
 
 | Resource | POST | GET | PUT | DELETE|
 | :--- | --- | --- | --- | --- |
-| `http://<domain>/<resources>`| Create | Read | Update | Delete |
-| `http://<domain>/<resources>/<resourceId>` | Update | Read | Update | Delete |
+| `http://<domain>/<resources>`| create | read | update | delete |
+| `http://<domain>/<resources>/<resourceId>` | update | read | update | delete |
 
 ## Data format
 JSON
@@ -91,7 +91,7 @@ Example:
 ### Reference resource, collection
 
 - **resourceName** `object` имя ресурса
--- **resourceName.href** `string` uri ресурса
+  - **resourceName.href** `string` uri ресурса
 
 Ресурс может иметь ссылку на другой ресурс (пользователя, событие) или коллекцию (метки, связанные задачи, пользователи), в этом случае ресурс должен содержать имя и указатель на ресурс **owner.href**,  **labels.href**
 
@@ -362,9 +362,10 @@ Example:
 
 Обязательный параметры
 
-- **message** `string` сообщение об ошибке
 - **statusCode** `integer` статус код
 - **errorCode** `string` код ошибки
+- **message** `string` сообщение об ошибке
+
 
 ```json
 {
@@ -375,6 +376,8 @@ Example:
 ```
 
 ### 400 Bad request
+
+Не валидный запрос
 
 ```json
 {
@@ -402,6 +405,8 @@ Example:
 
 ### 401 Unauthorized
 
+Необходима авторазация
+
 ```json
 {
     "statusCode": 401,
@@ -411,6 +416,9 @@ Example:
 ```
 
 ### 403 Permission Denied
+
+Доступ рапрещен
+
 ```json
 {
     "statusCode": 403,
@@ -419,36 +427,50 @@ Example:
 }
 ```
 
-### 404 Not fount
+### 404 Not found
+
+Ресурс не найден
 
 ```json
 {
-    "statusCode": 400,
-    "errorCode": "NOT_FOUND",
-    "message": "Not found"
+    "statusCode": 404,
+    "errorCode": "NOT_FOUND_RESOURCE",
+    "message": "Not found resource"
+}
+```
+
+Не существующий путь
+
+```json
+{
+    "statusCode": 404,
+    "errorCode": "NOT_FOUND_ROUTE",
+    "message": "Not found route"
 }
 ```
 
 ### 409 Conflict
 
-- dublicate entry
+- пользователь с таким именен существует
 - ...
 
 ```json
 {
     "statusCode": 409,
-    "errorCode": "CONFLICT",
-    "message": "Conflict"
+    "errorCode": "CONFLICT_ERROR",
+    "message": "Conflict error"
 }
 ```
 
 ### 500 Internal error
 
+Что то пошло не так
+
 ```json
 {
     "statusCode": 500,
-    "errorCode": "INTERNAL_ERROR",
-    "message": "Internal error"
+    "errorCode": "INTERNAL_SERVER_ERROR",
+    "message": "Internal server error"
 }
 ```
 
